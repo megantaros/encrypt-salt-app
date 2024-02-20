@@ -61,6 +61,22 @@
                 <span class="hide-menu">Dashboard</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{route('admin.jabatan')}}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-users fs-5"></i>
+                </span>
+                <span class="hide-menu">Jabatan</span>
+              </a>
+            </li>
+            {{-- <li class="sidebar-item">
+              <a class="sidebar-link" href="{{route('admin.gaji')}}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-report-money fs-5 "></i>
+                </span>
+                <span class="hide-menu">Penggajian</span>
+              </a>
+            </li> --}}
             {{-- <li class="sidebar-item">
               <a class="sidebar-link" href="{{route('admin.karyawan')}}" aria-expanded="false">
                 <span>

@@ -12,9 +12,8 @@ return new class extends Migration {
     {
         Schema::create('slip_gaji', function (Blueprint $table) {
             $table->bigIncrements('id_slip_gaji');
+            $table->unsignedBigInteger('id_karyawan');
             $table->bigInteger('gaji_pokok');
-            $table->unsignedBigInteger('id_tunjangan');
-            $table->timestamp('tgl_gaji');
             $table->timestamps();
         });
     }

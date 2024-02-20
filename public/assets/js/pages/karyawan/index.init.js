@@ -55,9 +55,6 @@ $(document).ready(function () {
                     <button class="btn btn-sm btn-warning btn-edit" data-id="${data.id_karyawan}" data-nik="${data.nik}">
                         <i class="ti ti-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-danger btn-delete" data-id="${data.id_karyawan}" data-nik="${data.nik}">
-                        <i class="ti ti-trash"></i>
-                    </button>
                     `;
                 },
             },
@@ -368,84 +365,84 @@ $(document).ready(function () {
             });
     });
 
-    modal_delete_karyawan.on("click", ".btn-login", function (e) {
-        e.preventDefault();
+    // modal_delete_karyawan.on("click", ".btn-login", function (e) {
+    //     e.preventDefault();
 
-        let id_karyawan = modal_delete_karyawan.find("#id_karyawan").val();
-        let nik = modal_delete_karyawan.find("#nik").val();
-        let password = modal_delete_karyawan.find("#password").val();
+    //     let id_karyawan = modal_delete_karyawan.find("#id_karyawan").val();
+    //     let nik = modal_delete_karyawan.find("#nik").val();
+    //     let password = modal_delete_karyawan.find("#password").val();
 
-        if (password === "") {
-            Swal.fire({
-                title: "Gagal!",
-                text: "Password harus diisi!",
-                icon: "error",
-                showConfirmButton: false,
-            });
-            return;
-        }
+    //     if (password === "") {
+    //         Swal.fire({
+    //             title: "Gagal!",
+    //             text: "Password harus diisi!",
+    //             icon: "error",
+    //             showConfirmButton: false,
+    //         });
+    //         return;
+    //     }
 
-        ajaxAttempt(nik, password, modal_delete_karyawan)
-            .then((response) => {
-                if (response.status === "success") {
-                    $.ajax({
-                        type: "GET",
-                        url: url_delete_karyawan + "/" + id_karyawan,
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        success: function (response) {
-                            if (response.status === "error") {
-                                showLoading().close();
-                                Swal.fire({
-                                    title: "Gagal!",
-                                    text: response.message,
-                                    icon: "error",
-                                    showConfirmButton: false,
-                                }).then(() => {
-                                    modal_delete_karyawan
-                                        .find("#password")
-                                        .val("");
-                                    modal_delete_karyawan.modal("hide");
-                                });
-                            }
+    //     ajaxAttempt(nik, password, modal_delete_karyawan)
+    //         .then((response) => {
+    //             if (response.status === "success") {
+    //                 $.ajax({
+    //                     type: "GET",
+    //                     url: url_delete_karyawan + "/" + id_karyawan,
+    //                     headers: {
+    //                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+    //                             "content"
+    //                         ),
+    //                     },
+    //                     success: function (response) {
+    //                         if (response.status === "error") {
+    //                             showLoading().close();
+    //                             Swal.fire({
+    //                                 title: "Gagal!",
+    //                                 text: response.message,
+    //                                 icon: "error",
+    //                                 showConfirmButton: false,
+    //                             }).then(() => {
+    //                                 modal_delete_karyawan
+    //                                     .find("#password")
+    //                                     .val("");
+    //                                 modal_delete_karyawan.modal("hide");
+    //                             });
+    //                         }
 
-                            if (response.status === "success") {
-                                showLoading().close();
-                                Swal.fire({
-                                    title: "Berhasil!",
-                                    text: response.message,
-                                    icon: "success",
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                }).then(() => {
-                                    modal_delete_karyawan
-                                        .find("#password")
-                                        .val("");
-                                    modal_delete_karyawan.modal("hide");
-                                    data_table.ajax.reload();
-                                });
-                            }
-                        },
-                    });
-                } else {
-                    showLoading().close();
-                    Swal.fire({
-                        title: "Gagal!",
-                        text: response.message,
-                        icon: "error",
-                        showConfirmButton: false,
-                    }).then(() => {
-                        modal_delete_karyawan.find("#password").val("");
-                        modal_delete_karyawan.modal("hide");
-                    });
-                }
-            })
-            .catch((err) => {
-                showLoading().close();
-                console.log(err);
-            });
-    });
+    //                         if (response.status === "success") {
+    //                             showLoading().close();
+    //                             Swal.fire({
+    //                                 title: "Berhasil!",
+    //                                 text: response.message,
+    //                                 icon: "success",
+    //                                 showConfirmButton: false,
+    //                                 timer: 1500,
+    //                             }).then(() => {
+    //                                 modal_delete_karyawan
+    //                                     .find("#password")
+    //                                     .val("");
+    //                                 modal_delete_karyawan.modal("hide");
+    //                                 data_table.ajax.reload();
+    //                             });
+    //                         }
+    //                     },
+    //                 });
+    //             } else {
+    //                 showLoading().close();
+    //                 Swal.fire({
+    //                     title: "Gagal!",
+    //                     text: response.message,
+    //                     icon: "error",
+    //                     showConfirmButton: false,
+    //                 }).then(() => {
+    //                     modal_delete_karyawan.find("#password").val("");
+    //                     modal_delete_karyawan.modal("hide");
+    //                 });
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             showLoading().close();
+    //             console.log(err);
+    //         });
+    // });
 });

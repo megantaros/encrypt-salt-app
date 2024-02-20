@@ -11,6 +11,8 @@ $(document).ready(function () {
         $(".row").find("select").attr("disabled", true);
         $(".row").find("textarea").attr("disabled", true);
         btn_update.attr("disabled", true);
+        btn_delete.attr("disabled", true);
+        btn_edit_gaji.attr("disabled", true);
     }
 
     function showLoading() {
@@ -157,6 +159,67 @@ $(document).ready(function () {
                     return;
                 }
             },
+        });
+    });
+
+    btn_delete.on("click", function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Apakah Anda Yakin?",
+            text: "Data yang dihapus tidak dapat dikembalikan",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, Hapus",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: url_delete_karyawan,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    beforeSend: function () {
+                        showLoading();
+                    },
+                    success: function (response) {
+                        if (response.status === "success") {
+                            showLoading().close();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil",
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false,
+                            }).then(() => {
+                                window.location.href = route_index;
+
+                                localStorage.removeItem("session_edit");
+                            });
+                        }
+
+                        if (response.status === "error") {
+                            showLoading().close();
+                            Swal.fire({
+                                icon: "error",
+                                title: "Gagal",
+                                text: response.message,
+                                showConfirmButton: false,
+                            });
+                            return;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        showLoading().close();
+                        console.error(xhr.responseText);
+                    },
+                });
+            }
         });
     });
 
@@ -322,6 +385,139 @@ $(document).ready(function () {
                         $(".row").find("select").attr("disabled", false);
                         $(".row").find("textarea").attr("disabled", false);
                         btn_update.attr("disabled", false);
+                        btn_delete.attr("disabled", false);
+                        btn_edit_gaji.attr("disabled", false);
+                    });
+                }
+
+                if (response.status === "error") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: response.message,
+                        showConfirmButton: false,
+                    });
+                    return;
+                }
+            },
+            error: function (xhr, status, error) {
+                showLoading().close();
+                console.error(xhr.responseText);
+            },
+        });
+    });
+
+    modal_add_gaji.find("#nama_karyawan").val(nama_karyawan);
+    modal_edit_gaji.find("#nama_karyawan").val(nama_karyawan);
+
+    btn_add_gaji.on("click", function (e) {
+        e.preventDefault();
+
+        let gaji_pokok = modal_add_gaji.find("#gaji_pokok").val();
+
+        if (gaji_pokok == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: "Semua inputan harus diisi",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url_add_gaji,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            data: {
+                id_karyawan: id_karyawan,
+                gaji_pokok: gaji_pokok,
+            },
+            beforeSend: function () {
+                showLoading();
+            },
+            success: function (response) {
+                if (response.status === "success") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false,
+                    }).then(function () {
+                        modal_add_gaji.modal("hide");
+                        window.location.reload();
+                        // drawer_gaji
+                        //     .find("h6")
+                        //     .text(formatRupiah(gaji_pokok, "Rp. "));
+                    });
+                }
+
+                if (response.status === "error") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: response.message,
+                        showConfirmButton: false,
+                    });
+                    return;
+                }
+            },
+            error: function (xhr, status, error) {
+                showLoading().close();
+                console.error(xhr.responseText);
+            },
+        });
+    });
+
+    btn_edit_gaji.on("click", function (e) {
+        e.preventDefault();
+
+        let gaji_pokok = modal_edit_gaji.find("#gaji_pokok").val();
+
+        if (gaji_pokok == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: "Semua inputan harus diisi",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
+        $.ajax({
+            type: "PUT",
+            url: url_edit_gaji + `/${id_slip_gaji}`,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            data: {
+                id_karyawan: id_karyawan,
+                gaji_pokok: gaji_pokok,
+            },
+            beforeSend: function () {
+                showLoading();
+            },
+            success: function (response) {
+                if (response.status === "success") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false,
+                    }).then(function () {
+                        modal_edit_gaji.modal("hide");
+                        localStorage.removeItem("session_edit");
+                        window.location.reload();
                     });
                 }
 

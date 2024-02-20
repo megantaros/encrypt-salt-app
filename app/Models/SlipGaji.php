@@ -11,4 +11,5 @@ class SlipGaji extends Model
 
     protected $table = 'slip_gaji';
     protected $primaryKey = 'id_slip_gaji';
+    protected $guarded = [];
 }

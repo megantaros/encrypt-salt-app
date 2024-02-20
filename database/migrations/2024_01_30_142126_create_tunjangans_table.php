@@ -12,7 +12,10 @@ return new class extends Migration {
     {
         Schema::create('tunjangan', function (Blueprint $table) {
             $table->bigIncrements('id_tunjangan');
-            $table->enum('nama_tunjangan', ['Tunjangan Perjalanan', 'Tunjangan Anak', 'Tunjangan Pajak', 'Tunjangan Lainnya']);
+            $table->unsignedBigInteger('id_slip_gaji')->nullable();
+            // $table->enum('nama_tunjangan', ['Tunjangan Perjalanan', 'Tunjangan Anak', 'Tunjangan Pajak', 'Tunjangan Lainnya']);
+            $table->string('nama_tunjangan');
+            $table->integer('jumlah_tunjangan');
             $table->timestamps();
         });
     }

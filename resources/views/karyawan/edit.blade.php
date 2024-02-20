@@ -32,8 +32,23 @@
 @endsection
 
 @section('page')
+{{-- @php
+    function rupiah($angka){
+        $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        return $hasil_rupiah;
+    }
+@endphp --}}
+
 <x-modal id="modal-perizinan" title="Perizinan">
     @include('karyawan.modal.perizinan')
+</x-modal>
+
+<x-modal id="modal-add-gaji" title="Tambah Gaji Karyawan">
+    @include('karyawan.modal.add-gaji')
+</x-modal>
+
+<x-modal id="modal-edit-gaji" title="Edit Gaji Karyawan">
+    @include('karyawan.modal.edit-gaji')
 </x-modal>
 
 <div class="row">
@@ -163,6 +178,7 @@
                 </div>
             </div>
         </div>
+        <button class="btn btn-danger w-100 btn-delete-karyawan">Hapus Karyawan</button>
     </div>
 </div>
 
@@ -172,7 +188,47 @@
           <div class="card-body p-4">
 
             <div class="row mb-3">
-              <div class="col-8">
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-semibold m-0">Data Gaji Karyawan a/n {{$karyawan->nama_karyawan}}</h5>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered border-1 align-middle">
+                    <tbody>                 
+                        <tr>
+                            <td class="border-bottom-0 w-25 bg-light">
+                                <h6 class="fw-semibold mb-0">Gaji Pokok</h6>                          
+                            </td>
+                            <td id="drawer-gaji" class="border-bottom-0 d-flex justify-content-between align-items-center">
+                                @if($karyawan->gaji_pokok == null)
+                                <h6 class="fw-semibold mb-0 fs-3">Gaji belum ditambahkan</h6>
+                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-add-gaji">
+                                <i class="ti ti-plus"></i></button>
+                                @else
+                                <h6 class="fw-semibold mb-0 fs-3">Rp {{number_format($karyawan->gaji_pokok, 0, ',', '.')}}</h6>
+                                <button type="button" class="btn btn-warning btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-edit-gaji">
+                                <i class="ti ti-pencil"></i></button>
+                                </button>
+                                @endif
+                            </td>
+                        <tr>                                              
+                    </tbody>
+                </table>
+            </div>
+    
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card w-100 shadow">
+          <div class="card-body p-4">
+
+            <div class="row mb-3">
+              <div class="col-8 m-0">
                 <h5 class="card-title fw-semibold m-0">Data Perizinan a/n {{$karyawan->nama_karyawan}}</h5>
               </div>
               <div class="col-4 d-flex justify-content-end">
@@ -210,20 +266,34 @@
 <script src="{{asset('assets/js/pages/karyawan/edit.init.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-md5@0.8.3/src/md5.min.js"></script>
 <script>
-    const route_index = '{{route('admin.dashboard')}}';
-    const modal_perizinan = $('#modal-perizinan');
-    const btn_update = $('.btn-update');
     const input_ktp = $('#inputKtp');
-    const id_karyawan = "{{$karyawan->id_karyawan}}";
-    const id_admin = "{{Auth::user()->id_admin}}";
+    const btn_update = $('.btn-update');
+    const btn_delete = $('.btn-delete-karyawan');
+    const btn_add_gaji = $('.btn-add-gaji');
+    const btn_edit_gaji = $('.btn-edit-gaji');
+
     const form_perizinan = $('#form-perizinan');
+    const modal_perizinan = $('#modal-perizinan');
+    const modal_add_gaji = $('#modal-add-gaji');
+    const modal_edit_gaji = $('#modal-edit-gaji');
+    
+    const id_karyawan = "{{$karyawan->id_karyawan}}";
+    const nama_karyawan = "{{$karyawan->nama_karyawan}}";
+    const id_admin = "{{Auth::user()->id_admin}}";
+    const gaji_is_exist = "{{$karyawan->gaji_pokok}}";
+    const id_slip_gaji = "{{$karyawan->id_slip_gaji}}";
 
     let data_table = null;
     const table_perizinan = $("#table-perizinan");
-
+    
+    const route_index = '{{route('admin.dashboard')}}';
     const url_update_karyawan = "{{route('karyawan.update', $karyawan->id_karyawan)}}";
+    const url_delete_karyawan = "{{route('karyawan.delete', $karyawan->id_karyawan)}}";
     const url_get_perizinan = "{{route('perizinan.index', $karyawan->id_karyawan)}}";
     const url_add_perizinan = "{{route('perizinan.store')}}";
     const url_bukti_perizinan = "{{asset('storage/bukti/')}}";
+    const url_add_gaji = "{{route('gaji.store')}}";
+    const url_edit_gaji = "{{route('gaji.update', '')}}";
+
 </script>
 @endsection

@@ -11,9 +11,9 @@
   @include('karyawan.modal.edit')
 </x-modal>
 
-<x-modal id="modal-delete-karyawan" title="Hapus Karyawan" size="modal-md">
+{{-- <x-modal id="modal-delete-karyawan" title="Hapus Karyawan" size="modal-md">
   @include('karyawan.modal.delete')
-</x-modal>
+</x-modal> --}}
 
 <x-modal id="modal-add-karyawan" title="Tambah Karyawan" size="modal-lg">
   @include('karyawan.modal.store')
@@ -67,13 +67,13 @@
   const modal_add_karyawan = $("#modal-add-karyawan");
   const modal_show_karyawan = $("#modal-show-karyawan");
   const modal_edit_karyawan = $("#modal-edit-karyawan");
-  const modal_delete_karyawan = $("#modal-delete-karyawan");
+  // const modal_delete_karyawan = $("#modal-delete-karyawan");
 
   const url_login_karyawan = "{{route('karyawan.login')}}";
   const url_get_karyawan = "{{route('karyawan.index')}}";
   const url_add_karyawan = "{{route('karyawan.store')}}";
   const url_show_karyawan = "{{route('karyawan.show', '')}}";
   const url_edit_karyawan = "{{route('karyawan.edit', '')}}";
-  const url_delete_karyawan = "{{route('karyawan.delete', '')}}";
+  // const url_delete_karyawan = "{{route('karyawan.delete', '')}}";
 </script>
 @endsection

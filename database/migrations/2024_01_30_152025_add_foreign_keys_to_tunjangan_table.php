@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('slip_gaji', function (Blueprint $table) {
-            $table->foreign('id_tunjangan')->references('id_tunjangan')->on('tunjangan')->onDelete('cascade');
+        Schema::table('tunjangan', function (Blueprint $table) {
+            $table->foreign('id_slip_gaji')->references('id_slip_gaji')->on('slip_gaji')->onDelete('cascade');
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->bigIncrements('id_karyawan');
             $table->string('nama_karyawan');
             $table->unsignedBigInteger('id_jabatan');
-            $table->unsignedBigInteger('id_slip_gaji')->nullable();
+            // $table->unsignedBigInteger('id_slip_gaji')->nullable();
             $table->string('nik');
             $table->string('password');
             $table->string('salt')->nullable();

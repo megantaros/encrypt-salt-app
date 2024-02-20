@@ -15,18 +15,22 @@ class TunjanganSeeder extends Seeder
         //
         \App\Models\Tunjangan::create([
             'nama_tunjangan' => 'Tunjangan Perjalanan',
+            'jumlah_tunjangan' => 1000000
         ]);
 
         \App\Models\Tunjangan::create([
             'nama_tunjangan' => 'Tunjangan Anak',
+            'jumlah_tunjangan' => 500000
         ]);
 
         \App\Models\Tunjangan::create([
             'nama_tunjangan' => 'Tunjangan Pajak',
+            'jumlah_tunjangan' => 2000000
         ]);
 
         \App\Models\Tunjangan::create([
             'nama_tunjangan' => 'Tunjangan Lainnya',
+            'jumlah_tunjangan' => 3000000
         ]);
     }
 }

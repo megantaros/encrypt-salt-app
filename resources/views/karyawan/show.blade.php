@@ -17,6 +17,10 @@
     </form>
 </x-modal>
 
+<x-modal id="modal-gaji" title="Tambah Gaji Karyawan" size="modal-md">
+    Cek Karyawan
+</x-modal>
+
 <div class="row">
     <div class="col-lg-8 col-md-8 col-12">
         <div class="card w-100 shadow-lg border">
@@ -120,6 +124,41 @@
                     <p>{{$karyawan->ktp}}</p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card w-100 shadow">
+          <div class="card-body p-4">
+
+            <div class="row mb-3">
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-semibold m-0">Data Gaji Karyawan a/n {{$karyawan->nama_karyawan}}</h5>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered border-1 align-middle">
+                    <tbody>                 
+                        <tr>
+                            <td class="border-bottom-0 w-25 bg-light">
+                                <h6 class="fw-semibold mb-0">Gaji Pokok</h6>                          
+                            </td>
+                            <td id="drawer-gaji" class="border-bottom-0 d-flex justify-content-between align-items-center">
+                                @if($karyawan->gaji_pokok == null)
+                                <h6 class="fw-semibold mb-0 fs-3">Gaji pokok belum ditambahkan</h6>
+                                @else
+                                <h6 class="fw-semibold mb-0 fs-3">Rp {{number_format($karyawan->gaji_pokok, 0, ',', '.')}}</h6>
+                                @endif
+                            </td>
+                        <tr>                                              
+                    </tbody>
+                </table>
+            </div>
+    
+          </div>
         </div>
     </div>
 </div>

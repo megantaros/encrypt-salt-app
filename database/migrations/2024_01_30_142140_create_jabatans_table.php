@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('jabatan', function (Blueprint $table) {
             $table->bigIncrements('id_jabatan');
-            $table->enum('nama_jabatan', ['Kepala Dinas', 'Sekretaris', 'UPTD']);
+            // $table->enum('nama_jabatan', ['Kepala Dinas', 'Sekretaris', 'UPTD']);
+            $table->string('nama_jabatan');
             $table->timestamps();
         });
     }

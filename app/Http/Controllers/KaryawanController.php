@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\Perizinan;
+use App\Models\SlipGaji;
 use Illuminate\Http\Request;
 use App\Traits\UploadFile;
 use App\Traits\Salt;
@@ -54,6 +55,7 @@ class KaryawanController extends Controller
         $request->validate([
             'nama_karyawan' => 'required',
             'id_jabatan' => 'required',
+            'id_slip_gaji',
             'nik' => 'required',
             'password' => 'required',
             'alamat' => 'required',
@@ -113,9 +115,15 @@ class KaryawanController extends Controller
 
     public function show($id)
     {
+        // $karyawan = Karyawan::join('jabatan', 'karyawan.id_jabatan', '=', 'jabatan.id_jabatan')
+        //     ->select('karyawan.*', 'jabatan.nama_jabatan')
+        //     ->where('id_karyawan', $id)
+        //     ->first();
+
         $karyawan = Karyawan::join('jabatan', 'karyawan.id_jabatan', '=', 'jabatan.id_jabatan')
-            ->select('karyawan.*', 'jabatan.nama_jabatan')
-            ->where('id_karyawan', $id)
+            ->leftJoin('slip_gaji', 'karyawan.id_karyawan', '=', 'slip_gaji.id_karyawan')
+            ->select('karyawan.*', 'jabatan.nama_jabatan', 'slip_gaji.gaji_pokok', 'slip_gaji.id_slip_gaji')
+            ->where('karyawan.id_karyawan', $id)
             ->first();
 
         if ($karyawan) {
@@ -125,8 +133,9 @@ class KaryawanController extends Controller
     public function edit($id)
     {
         $karyawan = Karyawan::join('jabatan', 'karyawan.id_jabatan', '=', 'jabatan.id_jabatan')
-            ->select('karyawan.*', 'jabatan.nama_jabatan')
-            ->where('id_karyawan', $id)
+            ->leftJoin('slip_gaji', 'karyawan.id_karyawan', '=', 'slip_gaji.id_karyawan')
+            ->select('karyawan.*', 'jabatan.nama_jabatan', 'slip_gaji.gaji_pokok', 'slip_gaji.id_slip_gaji')
+            ->where('karyawan.id_karyawan', $id)
             ->first();
 
         $jabatan = \App\Models\Jabatan::all();
