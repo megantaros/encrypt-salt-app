@@ -2,27 +2,27 @@
     @csrf
     <div class="mb-1">
       <label for="nama_karyawan" class="form-label">Nama Karyawan</label>
-      <input type="text" class="form-control" id="nama_karyawan" value="Yoandika" required>
+      <input type="text" class="form-control" id="nama_karyawan" required>
     </div>   
     <div class="mb-1">
       <label for="nik" class="form-label">NIK</label>
-      <input type="number" class="form-control" id="nik" value="3300330033003300" required>
+      <input type="number" class="form-control" id="nik" required>
     </div>
     <div class="mb-1">
       <label for="kk" class="form-label">No. KK</label>
-      <input type="number" class="form-control" id="kk" value="3300330033003300" required>
+      <input type="number" class="form-control" id="kk" required>
     </div>
     <div class="mb-1">
       <label for="nip" class="form-label">NIP</label>
-      <input type="number" class="form-control" id="nip" value="3300330033003300" required>
+      <input type="number" class="form-control" id="nip" required>
     </div>
     <div class="mb-1">
       <label for="no_telpon" class="form-label">No. Telpon</label>
-      <input type="number" class="form-control" id="no_telpon" value="087778667288" required>
+      <input type="number" class="form-control" id="no_telpon" required>
     </div>
     <div class="mb-1">
       <label for="alamat" class="form-label">Alamat</label>
-      <textarea class="form-control" id="alamat" required>Desa Sumbung</textarea>
+      <textarea class="form-control" id="alamat" required></textarea>
     </div>
     <div class="mb-1">
       <label for="jabatan" class="form-label">Jabatan</label>
@@ -39,11 +39,11 @@
     </div>
     <div class="mb-1">
       <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" value="123" required>
+      <input type="password" class="form-control" id="password" required>
     </div>
     <div class="mb-1">
       <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-      <input type="password" class="form-control" id="password_confirmation" value="123" required>
+      <input type="password" class="form-control" id="password_confirmation" required>
     </div>
 
     <div class="modal-footer">
