@@ -11,4 +11,5 @@ class Tunjangan extends Model
 
     protected $table = 'tunjangan';
     protected $primaryKey = 'id_tunjangan';
+    protected $guarded = [];
 }

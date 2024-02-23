@@ -115,11 +115,6 @@ class KaryawanController extends Controller
 
     public function show($id)
     {
-        // $karyawan = Karyawan::join('jabatan', 'karyawan.id_jabatan', '=', 'jabatan.id_jabatan')
-        //     ->select('karyawan.*', 'jabatan.nama_jabatan')
-        //     ->where('id_karyawan', $id)
-        //     ->first();
-
         $karyawan = Karyawan::join('jabatan', 'karyawan.id_jabatan', '=', 'jabatan.id_jabatan')
             ->leftJoin('slip_gaji', 'karyawan.id_karyawan', '=', 'slip_gaji.id_karyawan')
             ->select('karyawan.*', 'jabatan.nama_jabatan', 'slip_gaji.gaji_pokok', 'slip_gaji.id_slip_gaji')
@@ -140,15 +135,27 @@ class KaryawanController extends Controller
 
         $jabatan = \App\Models\Jabatan::all();
 
+        if ($karyawan->id_slip_gaji == null) {
+            $total_gaji = 0;
+        } else {
+            $total_gaji = 0;
+            $total_tunjangan = 0;
+            $slip_gaji = SlipGaji::where('id_karyawan', $id)->first();
+            $tunjangan = \App\Models\Tunjangan::where('id_slip_gaji', $slip_gaji->id_slip_gaji)->get();
+            foreach ($tunjangan as $t) {
+                $total_tunjangan += $t->jumlah_tunjangan;
+            }
+            $total_gaji = $slip_gaji->gaji_pokok + $total_tunjangan;
+        }
+
         if ($karyawan) {
-            return view('karyawan.edit', compact('karyawan', 'jabatan'));
+            return view('karyawan.edit', compact('karyawan', 'jabatan', 'total_gaji'));
         }
     }
 
     public function update(Request $request, $id)
     {
         $karyawan = Karyawan::where('id_karyawan', $id)->first();
-
         if ($karyawan) {
             $data = $this->generate($request->password);
             if ($request->password) {
@@ -156,6 +163,7 @@ class KaryawanController extends Controller
                     'nama_karyawan' => $request->nama_karyawan,
                     'id_jabatan' => $request->id_jabatan,
                     'nik' => $request->nik,
+                    'kk' => $request->kk,
                     'password' => $data['hashed_password'],
                     'salt' => $data['salt'],
                     'alamat' => $request->alamat,
@@ -164,28 +172,15 @@ class KaryawanController extends Controller
                 ]);
             }
 
-            if ($request->hasFile('ktp')) {
-                $this->deleteFile('ktp', $karyawan->ktp);
-
-                $ktp = $this->uploadFile($request->file('ktp'), 'ktp');
-                $karyawan->ktp = $ktp;
-                $karyawan->save();
-
-                return response()->json(
-                    [
-                        'status' => 'success',
-                        'message' => 'Foto KTP berhasil diubah',
-                    ]
-                );
-            }
-
             $karyawan->update([
-                'nama_karyawan' => $request->nama_karyawan,
-                'id_jabatan' => $request->id_jabatan,
-                'nik' => $request->nik,
-                'alamat' => $request->alamat,
-                'no_telpon' => $request->no_telpon,
-                'nip' => $request->nip
+                'nama_karyawan' => $request->nama_karyawan ? $request->nama_karyawan : $karyawan->nama_karyawan,
+                'id_jabatan' => $request->id_jabatan ? $request->id_jabatan : $karyawan->id_jabatan,
+                'nik' => $request->nik ? $request->nik : $karyawan->nik,
+                'kk' => $request->kk ? $request->kk : $karyawan->kk,
+                'ktp' => $request->ktp ? $this->uploadFile($request->file('ktp'), 'ktp') : $karyawan->ktp,
+                'alamat' => $request->alamat ? $request->alamat : $karyawan->alamat,
+                'no_telpon' => $request->no_telpon ? $request->no_telpon : $karyawan->no_telpon,
+                'nip' => $request->nip ? $request->nip : $karyawan->nip
             ]);
 
             return response()->json(

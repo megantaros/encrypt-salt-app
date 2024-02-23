@@ -22,7 +22,7 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (auth()->attempt($credentials)) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard')->with('success', 'Anda Login berhasil!');
         }
 
         return redirect()->back()->with('error', 'Username atau password salah!');

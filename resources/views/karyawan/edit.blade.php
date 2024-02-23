@@ -32,13 +32,6 @@
 @endsection
 
 @section('page')
-{{-- @php
-    function rupiah($angka){
-        $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-        return $hasil_rupiah;
-    }
-@endphp --}}
-
 <x-modal id="modal-perizinan" title="Perizinan">
     @include('karyawan.modal.perizinan')
 </x-modal>
@@ -49,6 +42,14 @@
 
 <x-modal id="modal-edit-gaji" title="Edit Gaji Karyawan">
     @include('karyawan.modal.edit-gaji')
+</x-modal>
+
+<x-modal id="modal-add-tunjangan" title="Tambah Tunjangan Karyawan">
+    @include('karyawan.modal.add-tunjangan')
+</x-modal>
+
+<x-modal id="modal-edit-tunjangan" title="Edit Tunjangan Karyawan">
+    @include('karyawan.modal.edit-tunjangan')
 </x-modal>
 
 <div class="row">
@@ -193,29 +194,69 @@
               </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered border-1 align-middle">
-                    <tbody>                 
-                        <tr>
-                            <td class="border-bottom-0 w-25 bg-light">
-                                <h6 class="fw-semibold mb-0">Gaji Pokok</h6>                          
-                            </td>
-                            <td id="drawer-gaji" class="border-bottom-0 d-flex justify-content-between align-items-center">
-                                @if($karyawan->gaji_pokok == null)
-                                <h6 class="fw-semibold mb-0 fs-3">Gaji belum ditambahkan</h6>
+            <table class="table table-bordered border-1 align-middle">
+                <tbody>                 
+                    <tr>
+                        <td class="border-bottom-0 w-25 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="fw-semibold mb-0">Gaji Pokok</h6>
+                                @if($karyawan->gaji_pokok == null)                          
                                 <button type="button" class="btn btn-success btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-add-gaji">
-                                <i class="ti ti-plus"></i></button>
-                                @else
-                                <h6 class="fw-semibold mb-0 fs-3">Rp {{number_format($karyawan->gaji_pokok, 0, ',', '.')}}</h6>
-                                <button type="button" class="btn btn-warning btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-edit-gaji">
-                                <i class="ti ti-pencil"></i></button>
-                                </button>
+                                    <i class="ti ti-plus"></i></button>
                                 @endif
-                            </td>
-                        <tr>                                              
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        <td id="drawer-gaji" class="border-bottom-0">
+                            @if($karyawan->gaji_pokok == null)
+                            <h6 class="fw-semibold mb-0 fs-3">Gaji belum ditambahkan</h6>
+                            @else
+                            <div class="row">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-3">
+                                    <h6 class="fw-semibold mb-0 fs-3">Rp</h6>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 d-flex justify-content-end">
+                                    <h6 class="fw-semibold mb-0 fs-3">{{number_format($karyawan->gaji_pokok, 0, ',', '.')}}</h6>
+                                </div>
+                                <div class="col-xl-9 col-lg-12 col-md-col-12 col-3 d-flex justify-content-end align-items-end">
+                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modal-edit-gaji">
+                                    <i class="ti ti-pencil"></i></button>
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                        </td>
+                    </tr>                                              
+                    <tr>
+                        <td class="border-bottom-0 w-25 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="fw-semibold mb-0">Tunjangan</h6>
+                                @if($karyawan->gaji_pokok != null)                          
+                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modal-add-tunjangan">
+                                <i class="ti ti-plus"></i></button>
+                                @endif
+                            </div>
+                        </td>
+
+                        <td id="list-tunjangan" class="border-bottom-0 d-flex flex-column gap-4">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border-bottom-0 w-25 bg-light">
+                            <h6 class="fw-semibold mb-0">Total Gaji</h6>
+                        </td>    
+                        <td>
+                            <div class="row">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-3">
+                                    <h6 class="mb-0 fs-4 fw-bolder">Rp</h6>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 d-flex justify-content-end">
+                                    <h6 class="mb-0 fs-4 fw-bolder">{{number_format( $total_gaji, 0, ',', '.')}}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>                                              
+                </tbody>
+            </table>
     
           </div>
         </div>
@@ -271,11 +312,15 @@
     const btn_delete = $('.btn-delete-karyawan');
     const btn_add_gaji = $('.btn-add-gaji');
     const btn_edit_gaji = $('.btn-edit-gaji');
+    const btn_add_tunjangan = $('.btn-add-tunjangan');
+    const list_tunjangan = $('#list-tunjangan');
 
     const form_perizinan = $('#form-perizinan');
     const modal_perizinan = $('#modal-perizinan');
     const modal_add_gaji = $('#modal-add-gaji');
     const modal_edit_gaji = $('#modal-edit-gaji');
+    const modal_add_tunjangan = $('#modal-add-tunjangan');
+    const modal_edit_tunjangan = $('#modal-edit-tunjangan');
     
     const id_karyawan = "{{$karyawan->id_karyawan}}";
     const nama_karyawan = "{{$karyawan->nama_karyawan}}";
@@ -294,6 +339,10 @@
     const url_bukti_perizinan = "{{asset('storage/bukti/')}}";
     const url_add_gaji = "{{route('gaji.store')}}";
     const url_edit_gaji = "{{route('gaji.update', '')}}";
+    const url_add_tunjangan = "{{route('tunjangan.store', '')}}";
+    const url_get_tunjangan = "{{route('tunjangan.index', '')}}";
+    const url_edit_tunjangan = "{{route('tunjangan.update', '')}}";
+    const url_delete_tunjangan = "{{route('tunjangan.delete', '')}}";
 
 </script>
 @endsection

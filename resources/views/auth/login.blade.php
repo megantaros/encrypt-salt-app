@@ -7,6 +7,7 @@
   <title>Pengelolaan Pegawai</title>
   <link rel="shortcut icon" type="image/png" href="{{ asset('template/src/assets/images/logos/favicon.png') }}" />
   <link rel="stylesheet" href="{{ asset('template/src/assets/css/styles.min.css') }}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -26,11 +27,11 @@
                 </a>
                 <p class="text-center">Masuk sebagain admin</p>
 
-                @if (session('error'))
+                {{-- @if (session('error'))
                 <div class="alert alert-danger" role="alert">
                     {{ session('error') }}
                 </div>
-                @endif
+                @endif --}}
 
                 <form action="{{route('admin.attempt')}}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -70,12 +71,33 @@
   </div>
   <script src="{{ asset('template/src/assets/libs/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('template/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.js"></script>
 
   @auth
   <script>
     window.location = "{{ route('admin.dashboard') }}";
   </script>
   @endauth
+
+  <script>
+    @if (Session::has('success'))
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ Session::get('success') }}',
+        showConfirmButton: false,
+      });
+    @endif
+    @if (Session::has('error'))
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ Session::get('error') }}',
+        showConfirmButton: false,
+      });
+    @endif
+  </script>
+
 </body>
 
 </html>

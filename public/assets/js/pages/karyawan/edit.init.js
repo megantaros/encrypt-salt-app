@@ -13,6 +13,24 @@ $(document).ready(function () {
         btn_update.attr("disabled", true);
         btn_delete.attr("disabled", true);
         btn_edit_gaji.attr("disabled", true);
+        btn_add_tunjangan.attr("disabled", true);
+        modal_edit_tunjangan.find(".btn-edit-tunjangan").attr("disabled", true);
+    }
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.toString().replace(/[^,\d]/g, ""),
+            split = number_string.split(","),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            separator = sisa ? "." : "";
+            rupiah += separator + ribuan.join(".");
+        }
+
+        rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+        return prefix == undefined ? rupiah : rupiah ? rupiah : "";
     }
 
     function showLoading() {
@@ -235,12 +253,14 @@ $(document).ready(function () {
         var formData = new FormData();
         formData.append("ktp", $(this)[0].files[0]);
         formData.append("_method", "PUT");
-        formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
 
         $.ajax({
             type: "POST",
-            url: "{{route('karyawan.update', ['id' => $karyawan->id_karyawan ])}}",
+            url: url_update_karyawan,
             data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
             contentType: false,
             processData: false,
             beforeSend: function () {
@@ -259,6 +279,7 @@ $(document).ready(function () {
 
                     localStorage.removeItem("session_edit");
                 } else {
+                    console.error(response);
                     showLoading().close();
                     Swal.fire({
                         icon: "error",
@@ -387,6 +408,10 @@ $(document).ready(function () {
                         btn_update.attr("disabled", false);
                         btn_delete.attr("disabled", false);
                         btn_edit_gaji.attr("disabled", false);
+                        btn_add_tunjangan.attr("disabled", false);
+                        modal_edit_tunjangan
+                            .find(".btn-edit-tunjangan")
+                            .attr("disabled", false);
                     });
                 }
 
@@ -409,7 +434,11 @@ $(document).ready(function () {
     });
 
     modal_add_gaji.find("#nama_karyawan").val(nama_karyawan);
+
     modal_edit_gaji.find("#nama_karyawan").val(nama_karyawan);
+    modal_edit_gaji.find("#gaji_pokok").val(gaji_is_exist);
+
+    modal_add_tunjangan.find("#nama_karyawan").val(nama_karyawan);
 
     btn_add_gaji.on("click", function (e) {
         e.preventDefault();
@@ -536,6 +565,257 @@ $(document).ready(function () {
                 showLoading().close();
                 console.error(xhr.responseText);
             },
+        });
+    });
+
+    btn_add_tunjangan.on("click", function (e) {
+        e.preventDefault();
+
+        let nama_tunjangan = modal_add_tunjangan.find("#nama_tunjangan").val();
+        let jumlah_tunjangan = modal_add_tunjangan
+            .find("#jumlah_tunjangan")
+            .val();
+
+        if (nama_tunjangan == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: "Semua inputan harus diisi",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url_add_tunjangan,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            data: {
+                id_slip_gaji: id_slip_gaji,
+                nama_tunjangan: nama_tunjangan,
+                jumlah_tunjangan: jumlah_tunjangan,
+            },
+            beforeSend: function () {
+                showLoading();
+            },
+            success: function (response) {
+                if (response.status === "success") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false,
+                    }).then(function () {
+                        modal_add_tunjangan.modal("hide");
+                        window.location.reload();
+                    });
+                }
+
+                if (response.status === "error") {
+                    showLoading().close();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: response.message,
+                        showConfirmButton: false,
+                    });
+                    return;
+                }
+            },
+            error: function (xhr, status, error) {
+                showLoading().close();
+                console.error(xhr.responseText);
+            },
+        });
+    });
+
+    $.ajax({
+        type: "GET",
+        url: url_get_tunjangan + `/${id_slip_gaji}`,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (response) {
+            let data = response.data;
+            list_tunjangan.html(`
+        ${data
+            .map((item) => {
+                return `
+            <div class="row">
+                <div class="col-xl-1 col-lg-1 col-md-1 col-3">
+                    <h6 class="fw-semibold mb-0 fs-3">Rp</h6>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-6 d-flex justify-content-end">
+                    <h6 class="fw-semibold mb-0 fs-3">${formatRupiah(
+                        item.jumlah_tunjangan
+                    )}</h6>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-col-8 col-12 d-flex justify-content-start">
+                    <h6 class="fw-semibold mb-0 fs-3">${
+                        item.nama_tunjangan
+                    }</h6>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-col-1 col-12 d-flex justify-content-end align-items-end">
+                    <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-warning btn-sm d-flex align-items-center btn-edit-tunjangan" data-bs-toggle="modal" data-bs-target="#modal-edit-tunjangan" data-id="${
+                        item.id_tunjangan
+                    }" data-nama="${item.nama_tunjangan}" data-jumlah="${
+                    item.jumlah_tunjangan
+                }">
+                    <i class="ti ti-pencil"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm d-flex align-items-center btn-delete-tunjangan" data-id="${
+                        item.id_tunjangan
+                    }">
+                    <i class="ti ti-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+            `;
+            })
+            .join("")}
+        `);
+        },
+        error: function (xhr, status, error) {
+            list_tunjangan.html(`
+            <h6 class="fw-semibold mb-0 fs-3">Tunjangan belum ditambahkan</h6>
+            `);
+
+            console.error(xhr.responseText);
+        },
+    });
+
+    list_tunjangan.on("click", ".btn-edit-tunjangan", function () {
+        let id_tunjangan = $(this).data("id");
+        let nama_tunjangan = $(this).data("nama");
+        let jumlah_tunjangan = $(this).data("jumlah");
+
+        modal_edit_tunjangan.find("#nama_karyawan").val(nama_karyawan);
+        modal_edit_tunjangan.find("#nama_tunjangan").val(nama_tunjangan);
+        modal_edit_tunjangan.find("#jumlah_tunjangan").val(jumlah_tunjangan);
+
+        modal_edit_tunjangan.on("click", ".btn-edit-tunjangan", function (e) {
+            e.preventDefault();
+
+            let nama_tunjangan = modal_edit_tunjangan
+                .find("#nama_tunjangan")
+                .val();
+            let jumlah_tunjangan = modal_edit_tunjangan
+                .find("#jumlah_tunjangan")
+                .val();
+
+            if (nama_tunjangan == "" || jumlah_tunjangan == "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: "Semua inputan harus diisi",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
+            }
+
+            $.ajax({
+                type: "PUT",
+                url: url_edit_tunjangan + `/${id_tunjangan}`,
+                data: {
+                    nama_tunjangan: nama_tunjangan,
+                    jumlah_tunjangan: jumlah_tunjangan,
+                },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
+                },
+                beforeSend: function () {
+                    showLoading();
+                },
+                success: function (response) {
+                    if (response.status === "success") {
+                        showLoading().close();
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false,
+                        }).then(function () {
+                            modal_edit_tunjangan.modal("hide");
+                            window.location.reload();
+                        });
+                    }
+
+                    if (response.status === "error") {
+                        showLoading().close();
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal",
+                            text: response.message,
+                            showConfirmButton: false,
+                        });
+                        return;
+                    }
+                },
+            });
+        });
+    });
+
+    list_tunjangan.on("click", ".btn-delete-tunjangan", function () {
+        let id_tunjangan = $(this).data("id");
+
+        Swal.fire({
+            title: "Apakah Anda Yakin?",
+            text: "Data yang dihapus tidak dapat dikembalikan",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, Hapus",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: url_delete_tunjangan + `/${id_tunjangan}`,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    beforeSend: function () {
+                        showLoading();
+                    },
+                    success: function (response) {
+                        if (response.status === "success") {
+                            showLoading().close();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil",
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false,
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        }
+
+                        if (response.status === "error") {
+                            showLoading().close();
+                            Swal.fire({
+                                icon: "error",
+                                title: "Gagal",
+                                text: response.message,
+                                showConfirmButton: false,
+                            });
+                            return;
+                        }
+                    },
+                });
+            }
         });
     });
 });

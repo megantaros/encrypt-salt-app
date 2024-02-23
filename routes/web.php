@@ -54,4 +54,11 @@ Route::middleware('admin')->group(function () {
         Route::post('/store', [\App\Http\Controllers\SlipGajiController::class, 'store'])->name('store');
         Route::put('/update/{id}', [\App\Http\Controllers\SlipGajiController::class, 'update'])->name('update');
     });
+
+    Route::prefix('tunjangan')->name('tunjangan.')->group(function () {
+        Route::get('/{id_slip_gaji}', [\App\Http\Controllers\TunjanganController::class, 'index'])->name('index');
+        Route::post('/store', [\App\Http\Controllers\TunjanganController::class, 'store'])->name('store');
+        Route::put('/update/{id}', [\App\Http\Controllers\TunjanganController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [\App\Http\Controllers\TunjanganController::class, 'destroy'])->name('delete');
+    });
 });
