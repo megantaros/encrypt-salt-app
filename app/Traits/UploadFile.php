@@ -6,7 +6,8 @@ trait UploadFile
 {
     public function uploadFile($file, $path)
     {
-        $storagePath = storage_path('app/public/' . $path);
+        // $storagePath = storage_path('app/public/' . $path);
+        $storagePath = public_path('storage/' . $path);
 
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0755, true);
@@ -21,7 +22,8 @@ trait UploadFile
 
     public function deleteFile($path, $fileName)
     {
-        $storagePath = storage_path('app/public/' . $path . '/' . $fileName);
+        // $storagePath = storage_path('app/public/' . $path . '/' . $fileName);
+        $storagePath = public_path('storage/' . $path . '/' . $fileName);
 
         if (file_exists($storagePath)) {
             unlink($storagePath);
