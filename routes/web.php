@@ -23,6 +23,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/manajemen-penggajian', [\App\Http\Controllers\AdminController::class, 'gaji'])->name('gaji');
         Route::get('/manajemen-tunjangan', [\App\Http\Controllers\AdminController::class, 'tunjangan'])->name('tunjangan');
         Route::get('/manajemen-jabatan', [\App\Http\Controllers\AdminController::class, 'jabatan'])->name('jabatan');
+        Route::get('/cetak-slipgaji/{id}', [\App\Http\Controllers\AdminController::class, 'cetakSlipGaji'])->name('cetak-slipgaji');
         Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
     });
 

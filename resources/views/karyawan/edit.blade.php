@@ -134,14 +134,6 @@
                                     <input type="password" class="form-control m-0 fw-medium" id="password" placeholder="Opsional" required>
                                 </td>
                             </tr>                   
-                            {{-- <tr>
-                                <td class="border-bottom-0 w-25 bg-light">
-                                    <h6 class="fw-semibold mb-0">Salt</h6>                          
-                                </td>
-                                <td class="border-bottom-0">
-                                    <input type="text" class="form-control m-0 fw-medium" id="salt" value="{{$karyawan->salt}}" required disabled>
-                                </td>
-                            </tr>     --}}
                             <tr>
                                 <td colspan="2">
                                     <button type="button" class="btn btn-warning w-100 btn-update">Update</button>
@@ -191,6 +183,12 @@
             <div class="row mb-3">
               <div class="col-12 d-flex justify-content-between align-items-center">
                 <h5 class="card-title fw-semibold m-0">Data Gaji Karyawan a/n {{$karyawan->nama_karyawan}}</h5>
+                <a href="{{route('admin.cetak-slipgaji', $karyawan->id_slip_gaji)}}" target="_blank" class="btn btn-sm btn-primary">
+                    <i class="ti ti-printer"></i>
+                    <span>
+                        Cetak Slip Gaji
+                    </span>
+                </a>
               </div>
             </div>
 
