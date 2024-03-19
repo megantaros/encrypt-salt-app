@@ -183,6 +183,7 @@
             <div class="row mb-3">
               <div class="col-12 d-flex justify-content-between align-items-center">
                 <h5 class="card-title fw-semibold m-0">Data Gaji Karyawan a/n {{$karyawan->nama_karyawan}}</h5>
+                @if($karyawan->gaji_pokok != null)
                 <a href="{{route('admin.cetak-slipgaji', $karyawan->id_slip_gaji)}}" target="_blank" class="btn btn-sm btn-primary">
                     <i class="ti ti-printer"></i>
                     <span>
@@ -190,6 +191,7 @@
                     </span>
                 </a>
               </div>
+                @endif
             </div>
 
             <table class="table table-bordered border-1 align-middle">

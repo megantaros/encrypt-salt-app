@@ -137,6 +137,7 @@ class KaryawanController extends Controller
 
         if ($karyawan->id_slip_gaji == null) {
             $total_gaji = 0;
+            $karyawan->id_slip_gaji = 0;
         } else {
             $total_gaji = 0;
             $total_tunjangan = 0;
